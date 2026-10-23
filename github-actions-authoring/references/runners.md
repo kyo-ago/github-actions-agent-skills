@@ -2,8 +2,7 @@
 
 Treat `ubuntu-slim` as the preferred **candidate** for short GitHub API/CLI automation, issue/PR
 management, notifications, simple repository maintenance, and lightweight Bash/Python/Node
-scripts. Verify requirements before adopting it. The cheapest minute can be the slower, more
-expensive job after tool installation and retries.
+scripts. Verify requirements before adopting it, including tool installation and retry costs.
 
 ## Mandatory live evidence
 
@@ -36,16 +35,9 @@ unprivileged container. Treat this as a dated observation, recheck at use, and n
 a longer timeout to pretend the platform ceiling disappeared. Recheck CPU/memory/disk rather
 than copying a stale numeric table into workflows.
 
-## Examples of decisions, not universal templates
-
-- A five-minute `gh api` metadata request with explicit API permissions, env-based authentication,
-  and no checkout/build/container requirements is a strong slim candidate after tool verification.
-- A short Python script is a candidate only after checking its interpreter and dependencies;
-  a Python job compiling a large native dependency may not be lightweight.
-- Docker build/run, service databases, privileged mounts, large builds, browser suites, high
-  memory use, or jobs near/over the slim ceiling should use `ubuntu-24.04` or another compatible
-  standard/larger runner. Check that runner's own current README too.
-- A compatible Windows/macOS/ARM requirement overrides any Linux cost preference.
+Use a compatible standard/larger runner for workloads that fail these checks, including heavy
+native builds or browser suites. Check that runner's current README too. Windows/macOS/ARM
+requirements override any Linux cost preference.
 
 If official information cannot be retrieved, report tool/limit compatibility as unverified.
 Retain a known-compatible existing runner or use a conservatively justified standard runner;
