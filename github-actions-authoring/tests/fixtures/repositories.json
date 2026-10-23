@@ -1,0 +1,752 @@
+{
+  "cases": [
+    {
+      "name": "no-duplicates",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "within-workflow",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - &id001\n      name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - &id002\n      name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n    - *id001\n    - *id002\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "between-jobs",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n  other:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "between-workflows",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "workflow-and-composite",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n",
+        ".github/actions/atoms/prepare/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "between-composites",
+      "files": {
+        ".github/actions/atoms/left/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/atoms/right/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "within-composite",
+      "files": {
+        ".github/actions/atoms/prepare/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - &id001\n    name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - &id002\n    name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n  - *id001\n  - *id002\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "recursive-before",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n    - name: printf 'build\\n'\n      shell: bash\n      run: printf 'build\\n'\n    - name: printf 'package\\n'\n      shell: bash\n      run: printf 'package\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n    - name: printf 'build\\n'\n      shell: bash\n      run: printf 'build\\n'\n    - name: printf 'package\\n'\n      shell: bash\n      run: printf 'package\\n'\n",
+        ".github/actions/atoms/existing/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n  - name: printf 'build\\n'\n    shell: bash\n    run: printf 'build\\n'\n  - name: printf 'package\\n'\n    shell: bash\n    run: printf 'package\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "Stage 0: review existing composite reuse and extract its repeated preparation contract.",
+      "absent": []
+    },
+    {
+      "name": "recursive-middle",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: $/.github/actions/molecules/pipeline\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: $/.github/actions/molecules/pipeline\n",
+        ".github/actions/atoms/prepare/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/molecules/pipeline/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: $/.github/actions/atoms/prepare\n  - name: printf 'build\\n'\n    shell: bash\n    run: printf 'build\\n'\n  - name: printf 'package\\n'\n    shell: bash\n    run: printf 'package\\n'\n",
+        ".github/actions/atoms/other/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": false,
+      "note": "Stage 1: rescan detects the remaining repeated atom body; modern $/ support may exceed installed actionlint.",
+      "absent": [],
+      "self_reference_lint": true
+    },
+    {
+      "name": "recursive-after",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: $/.github/actions/molecules/pipeline\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: $/.github/actions/molecules/pipeline\n",
+        ".github/actions/atoms/prepare/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/molecules/pipeline/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: $/.github/actions/atoms/prepare\n  - name: printf 'build\\n'\n    shell: bash\n    run: printf 'build\\n'\n  - name: printf 'package\\n'\n    shell: bash\n    run: printf 'package\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "Stage 2: replace callers of other with prepare and remove the superseded duplicate; fixed point.",
+      "absent": [],
+      "self_reference_lint": true
+    },
+    {
+      "name": "five-levels-and-skipped-edge",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/molecules/two/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n",
+        ".github/actions/organisms/three/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/molecules/two\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n",
+        ".github/actions/templates/four/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/organisms/three\n",
+        ".github/actions/pages/five/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/templates/four\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "cycle",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/molecules/two\n",
+        ".github/actions/molecules/two/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n"
+      },
+      "errors": [
+        "COMPOSITE_CYCLE",
+        "COMPOSITE_DIRECTION"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "same-level",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/two\n",
+        ".github/actions/atoms/two/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "COMPOSITE_DIRECTION",
+        "COMPOSITE_LEVEL"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "upward-edge",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/molecules/two\n",
+        ".github/actions/molecules/two/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "COMPOSITE_DIRECTION",
+        "COMPOSITE_LEVEL"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "missing-local-action",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: ./.github/actions/atoms/missing\n"
+      },
+      "errors": [
+        "LOCAL_METADATA_MISSING"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "missing-action-yml",
+      "files": {
+        ".github/actions/atoms/incomplete/helper.sh": "#!/bin/sh\nexit 0\n"
+      },
+      "errors": [
+        "LOCAL_METADATA_MISSING"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "six-levels",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/molecules/two/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n",
+        ".github/actions/organisms/three/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/molecules/two\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n",
+        ".github/actions/templates/four/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/organisms/three\n",
+        ".github/actions/pages/five/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/templates/four\n",
+        ".github/actions/pages/six/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/pages/five\n"
+      },
+      "errors": [
+        "COMPOSITE_DEPTH",
+        "COMPOSITE_DIRECTION",
+        "COMPOSITE_LEVEL"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "incorrect-exact-level",
+      "files": {
+        ".github/actions/atoms/one/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n",
+        ".github/actions/organisms/three/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: Run shared processing\n    uses: ./.github/actions/atoms/one\n"
+      },
+      "errors": [
+        "COMPOSITE_LEVEL"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "behavior-toggle",
+      "files": {
+        ".github/actions/atoms/toggle/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: npm run build\n    shell: bash\n    run: npm run build\n    if: inputs.run-build == 'true'\ninputs:\n  run-build:\n    description: Enable build\n    default: 'false'\n"
+      },
+      "errors": [],
+      "reviews": [
+        "INPUT_CONDITION_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "hidden-toggle",
+      "files": {
+        ".github/actions/atoms/toggle/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: if [[ \"$FLAG\" == true ]]; then\n    shell: bash\n    run: \"if [[ \\\"$FLAG\\\" == true ]]; then\\n  npm run build\\nfi\"\n    env:\n      FLAG: ${{ inputs.flag }}\ninputs:\n  flag:\n    description: Enable build\n    default: 'false'\n"
+      },
+      "errors": [],
+      "reviews": [
+        "INPUT_FLOW_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "allowed-data-input-named-mode",
+      "files": {
+        ".github/actions/atoms/format/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf \"%s\\n\" \"$FORMAT\"\n    shell: bash\n    run: printf \"%s\\n\" \"$FORMAT\"\n    env:\n      FORMAT: ${{ inputs.mode }}\ninputs:\n  mode:\n    description: Output format data\n    required: true\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "data-condition-exception",
+      "files": {
+        ".github/actions/atoms/validate-path/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf \"::error::Path is required\\n\"\n    shell: bash\n    run: 'printf \"::error::Path is required\\n\"\n\n      exit 1'\n    if: inputs.path == ''\ninputs:\n  path:\n    description: Required source path\n    required: true\n"
+      },
+      "errors": [],
+      "reviews": [
+        "INPUT_CONDITION_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": true,
+      "note": "Single path-validation responsibility; separate action duplicates its validation contract; empty check is predictable; no new permissions/trust; colocated diagnostic improves maintenance. Human assessment required, not a toggle exemption.",
+      "absent": []
+    },
+    {
+      "name": "step-outputs",
+      "files": {
+        ".github/actions/atoms/digest/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf \"digest=fixture\\n\" >> \"$GITHUB_OUTPUT\"\n    shell: bash\n    run: printf \"digest=fixture\\n\" >> \"$GITHUB_OUTPUT\"\n    id: producer\n  - name: printf 'completed\\n'\n    shell: bash\n    run: printf 'completed\\n'\noutputs:\n  digest:\n    description: Computed digest\n    value: ${{ steps.producer.outputs.digest }}\n",
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Run shared processing\n      uses: $/.github/actions/atoms/digest\n      id: shared\n    - name: printf \"%s\\n\" \"$DIGEST\"\n      shell: bash\n      run: printf \"%s\\n\" \"$DIGEST\"\n      env:\n        DIGEST: ${{ steps.shared.outputs.digest }}\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": [],
+      "self_reference_lint": true
+    },
+    {
+      "name": "unknown-output-producer",
+      "files": {
+        ".github/actions/atoms/digest/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\noutputs:\n  digest:\n    description: Computed digest\n    value: ${{ steps.missing.outputs.digest }}\n"
+      },
+      "errors": [
+        "OUTPUT_STEP_MISSING"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "slim-suitable",
+      "files": {
+        ".github/workflows/api.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions:\n  contents: read\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-slim\n    timeout-minutes: 5\n    steps:\n    - name: gh api \"repos/$GH_REPO\" --jq .full_name\n      shell: bash\n      run: gh api \"repos/$GH_REPO\" --jq .full_name\n      env:\n        GH_REPO: ${{ github.repository }}\n        GH_TOKEN: ${{ github.token }}\n"
+      },
+      "errors": [],
+      "reviews": [
+        "SLIM_EVIDENCE_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": true,
+      "note": "API-only short job. Real runner/tools/credentials still require live verification.",
+      "absent": []
+    },
+    {
+      "name": "slim-unsuitable",
+      "files": {
+        ".github/workflows/build.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-slim\n    timeout-minutes: 20\n    steps:\n    - name: docker build -t fixture .\n      shell: bash\n      run: docker build -t fixture .\n    services:\n      database:\n        image: postgres:17\n"
+      },
+      "errors": [
+        "SLIM_INCOMPATIBLE",
+        "SLIM_TIMEOUT"
+      ],
+      "reviews": [
+        "SLIM_EVIDENCE_REVIEW",
+        "SLIM_RUNTIME_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "slim-service-only",
+      "files": {
+        ".github/workflows/test.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-slim\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n    services:\n      database:\n        image: postgres:17\n"
+      },
+      "errors": [
+        "SLIM_INCOMPATIBLE"
+      ],
+      "reviews": [
+        "SLIM_EVIDENCE_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "data-value-candidates",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf \"%s\\n\" \"$VERSION\"\n      shell: bash\n      run: printf \"%s\\n\" \"$VERSION\"\n      env:\n        VERSION: '20'\n    - name: printf 'done\\n'\n      shell: bash\n      run: printf 'done\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf \"%s\\n\" \"$VERSION\"\n      shell: bash\n      run: printf \"%s\\n\" \"$VERSION\"\n      env:\n        VERSION: '22'\n    - name: printf 'done\\n'\n      shell: bash\n      run: printf 'done\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": true,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "different-conditions-not-duplicates",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n      if: failure()\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "different-order-not-duplicates",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "single-step-not-extracted",
+      "files": {
+        ".github/workflows/a.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n",
+        ".github/workflows/b.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": true,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "action-yaml-not-convention",
+      "files": {
+        ".github/actions/atoms/alternate/action.yaml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: printf 'prepare\\n'\n    shell: bash\n    run: printf 'prepare\\n'\n  - name: printf 'configure\\n'\n    shell: bash\n    run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "COMPOSITE_FILENAME"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "shell-missing",
+      "files": {
+        ".github/actions/atoms/no-shell/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - run: 'true'\n"
+      },
+      "errors": [
+        "COMPOSITE_SHELL_MISSING"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "duplicate-yaml-key",
+      "files": {
+        ".github/workflows/ci.yml": "name: First\nname: Second\n"
+      },
+      "errors": [
+        "YAML_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "malformed-yaml",
+      "files": {
+        ".github/workflows/ci.yml": "jobs: [\n"
+      },
+      "errors": [
+        "YAML_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "recursive-alias",
+      "files": {
+        ".github/workflows/ci.yml": "name: recursive\nthing: &self [*self]\n"
+      },
+      "errors": [
+        "YAML_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "non-string-key",
+      "files": {
+        ".github/workflows/ci.yml": "true: invalid\n"
+      },
+      "errors": [
+        "YAML_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "merge-key",
+      "files": {
+        ".github/workflows/ci.yml": "base: &base {name: CI}\n<<: *base\n"
+      },
+      "errors": [
+        "YAML_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "invalid-steps-type",
+      "files": {
+        ".github/actions/atoms/broken/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps: not a list\n"
+      },
+      "errors": [
+        "STEPS_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "malformed-run-step",
+      "files": {
+        ".github/actions/atoms/broken/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - run:\n    - echo\n    - test\n    shell: bash\n    env: []\n"
+      },
+      "errors": [
+        "RUN_INVALID",
+        "STEP_MAPPING_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "invalid-local-path",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - uses: ./../outside\n"
+      },
+      "errors": [
+        "LOCAL_PATH_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "bracket-input-condition",
+      "files": {
+        ".github/actions/atoms/toggle/action.yml": "name: Shared processing\ndescription: Fixture shared processing\nruns:\n  using: composite\n  steps:\n  - name: 'true'\n    shell: bash\n    run: 'true'\n    if: inputs['toggle'] == 'true'\ninputs:\n  toggle:\n    description: Switch operation\n"
+      },
+      "errors": [],
+      "reviews": [
+        "INPUT_CONDITION_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "mutable-dependency-with-lock-present",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions: {}\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: Checkout\n      uses: actions/checkout@v6\n",
+        ".github/workflows/actions.lock": "version: fixture\n"
+      },
+      "errors": [],
+      "reviews": [
+        "DEPENDENCY_LOCK_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": true,
+      "note": "Intentionally not a real generated lockfile; presence must never suppress review. Mutable ref is adversarial test data.",
+      "absent": []
+    },
+    {
+      "name": "reusable-caller-timeout",
+      "files": {
+        ".github/workflows/ci.yml": "name: Caller\n'on': workflow_dispatch\npermissions: {}\nconcurrency: fixture\njobs:\n  call:\n    name: Call\n    uses: ./.github/workflows/child.yml\n    timeout-minutes: 5\n",
+        ".github/workflows/child.yml": "name: Child\n'on': workflow_call\npermissions: {}\nconcurrency: child\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "CALLER_TIMEOUT_UNSUPPORTED"
+      ],
+      "reviews": [
+        "REUSABLE_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "missing-timeout-and-permissions",
+      "files": {
+        ".github/workflows/ci.yml": "name: Bad CI\n'on': push\nconcurrency: fixture\njobs:\n  check:\n    name: Check\n    runs-on: ubuntu-24.04\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "TIMEOUT_MISSING",
+        "PERMISSIONS_MISSING"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "invalid-composite-mode",
+      "files": {
+        ".github/actions/atoms/typo/action.yml": "name: Typo\ndescription: Invalid composite mode\nruns:\n  using: Composite\n  steps:\n    - run: true\n      shell: bash\n"
+      },
+      "errors": [
+        "ACTION_RUNS_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "empty-action-metadata",
+      "files": {
+        ".github/actions/atoms/empty/action.yml": "{}\n"
+      },
+      "errors": [
+        "ACTION_RUNS_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "invalid-input-required",
+      "files": {
+        ".github/actions/atoms/data/action.yml": "name: Data\ndescription: Invalid required type\ninputs:\n  path:\n    description: Path data\n    required: \"true\"\nruns:\n  using: composite\n  steps:\n    - run: \"true\"\n      shell: bash\n"
+      },
+      "errors": [
+        "COMPOSITE_INPUT_REQUIRED"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "empty-permission-value",
+      "files": {
+        ".github/workflows/ci.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions:\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    steps:\n    - name: printf 'prepare\\n'\n      shell: bash\n      run: printf 'prepare\\n'\n    - name: printf 'configure\\n'\n      shell: bash\n      run: printf 'configure\\n'\n"
+      },
+      "errors": [
+        "PERMISSIONS_INVALID"
+      ],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "empty-workflow",
+      "files": {
+        ".github/workflows/empty.yml": "{}\n"
+      },
+      "errors": [
+        "TRIGGER_MISSING",
+        "JOBS_INVALID"
+      ],
+      "reviews": [
+        "WORKFLOW_NAME",
+        "CONCURRENCY_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "slim-docker-text-review",
+      "files": {
+        ".github/workflows/slim.yml": "name: Repository checks\n'on': workflow_dispatch\npermissions:\n  contents: read\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  check:\n    name: Check repository\n    runs-on: ubuntu-slim\n    timeout-minutes: 5\n    steps:\n    - name: printf \"docker build is documentation only\\n\"\n      shell: bash\n      run: printf \"docker build is documentation only\\n\"\n      env:\n        GH_REPO: ${{ github.repository }}\n        GH_TOKEN: ${{ github.token }}\n"
+      },
+      "errors": [],
+      "reviews": [
+        "SLIM_EVIDENCE_REVIEW",
+        "SLIM_RUNTIME_REVIEW"
+      ],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    },
+    {
+      "name": "local-javascript-not-a-depth-edge",
+      "files": {
+        ".github/actions/js/action.yml": "name: JS\ndescription: Existing local JS action\nruns:\n  using: node24\n  main: index.js\n",
+        ".github/actions/atoms/shared/action.yml": "name: Shared\ndescription: Calls a local non-composite action\nruns:\n  using: composite\n  steps:\n    - uses: ./.github/actions/js\n"
+      },
+      "errors": [],
+      "reviews": [],
+      "duplicates": false,
+      "lint": false,
+      "note": "",
+      "absent": []
+    }
+  ]
+}
