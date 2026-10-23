@@ -1,13 +1,8 @@
 # Maintainability and source record
 
-Give workflows, jobs, steps and action directories meaningful purpose-based names, consistent
-with the repository. Prefer a few explicit steps over an abstraction whose control flags create
-a second programming language. Move complex scripts into repository files when that makes
-testing/error reporting clearer; preserve working directories and environment contracts.
-
-Use comments primarily for reasons: trust boundaries, runner constraints, required-check filter
-decisions, retention, or why a duplicate remains. Avoid repeating the YAML in prose. Reuse
-existing update policy for action pins/lockfiles and review upstream changelogs before upgrades.
+Follow repository naming and update conventions. Extract complex scripts only when that improves
+testing/error reporting; preserve working-directory and environment contracts. Document reasons
+for trust boundaries, runner constraints, required-check filters, retention and retained duplicates.
 
 Record changed workflow/action paths, old-to-new call paths, exposed outputs, contract changes,
 exception decisions, and remaining duplicate candidates. Include changes to previously existing

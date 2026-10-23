@@ -32,16 +32,6 @@ and configuration can carry untrusted data. Pass values through step env or type
 quote shell expansions, validate formats/allowlists and use `--` where supported. An action input
 is only safe if its implementation also treats it as data.
 
-```yaml
-- name: Validate repository identifier
-  shell: bash
-  env:
-    REPOSITORY: ${{ github.repository }}
-  run: |
-    [[ "$REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || exit 1
-    printf 'Repository identifier validated\n'
-```
-
 For `$GITHUB_OUTPUT` / `$GITHUB_ENV`, validate single-line values or use a fresh delimiter and
 ensure no collision; arbitrary hostile multiline data is better kept in a file. Avoid command
 injection via data written to these files. Never log event dumps containing credentials.
