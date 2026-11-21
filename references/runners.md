@@ -42,3 +42,24 @@ requirements override any Linux cost preference.
 If official information cannot be retrieved, report tool/limit compatibility as unverified.
 Retain a known-compatible existing runner or use a conservatively justified standard runner;
 do not silently switch to slim. Dynamic matrix labels require expanding and checking each case.
+
+## Route dependency-update CI by event sender
+
+Use `ubuntu-slim` for eligible bot-triggered CI jobs and `ubuntu-latest` for human-triggered
+jobs when reducing developer wait time is a priority. Check both branches of the expression
+against the same job requirements and keep the same checks on both runners.
+
+```yaml
+runs-on: ${{ github.event.sender.type == 'Bot' && 'ubuntu-slim' || 'ubuntu-latest' }}
+```
+
+Check the payload of each CI trigger. This expression selects slim when GitHub reports a `Bot`
+sender and falls back to `ubuntu-latest` when the sender is absent or has another type. It uses
+the event sender even if someone else authored the PR or reruns the job. If self-hosted Renovate
+uses a dedicated user account with a PAT, include that account's `github.event.sender.login`
+explicitly if it should use slim. Keep this routing separate from permissions and trust decisions.
+If release latency is the priority, use a compatible standard runner for release jobs even when
+a bot starts the release.
+
+- [Context availability and event payloads](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
+- [Renovate identities on GitHub](https://docs.renovatebot.com/modules/platform/github/)
