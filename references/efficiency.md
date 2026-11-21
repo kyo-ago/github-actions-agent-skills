@@ -24,6 +24,33 @@
   cache costs and billing in the comparison. Do not parallelize beyond repository/service
   limits or hide failures with matrix settings.
 
+## Stage release assets alongside verification
+
+Run lint, test and build for the same release commit in parallel wherever they have independent
+inputs. Preserve any real dependencies, such as a test that consumes build output. Stage build
+assets as soon as the build succeeds, without waiting for independent lint and test jobs. Use a
+final activation job to switch the production route or access controls only after every required
+job succeeds.
+
+| Job | `needs` for independent lint, test and build jobs |
+| --- | --- |
+| `lint`, `test`, `build` | None |
+| `stage_assets` | `[build]` |
+| `activate_release` | `[lint, test, build, stage_assets]` |
+
+- Stage assets in a private, release-specific location. Restrict staging credentials to that
+  location and verify the assets cannot be reached before activation, including through direct
+  storage or CDN URLs. Preserve live assets. If the destination exposes uploads immediately,
+  wait for verification before writing there.
+- Keep the default `needs` success gate and propagate failures from checks and asset uploads.
+  Verify that the staged assets match the release commit and that the upload is complete before
+  switching the production reference as one operation. Prevent overlapping releases or retries
+  from activating a superseded version.
+- A failed, cancelled or skipped prerequisite leaves the current release active. Earlier CI can
+  reduce the frequency of failures. Isolation of staged assets and the activation gate are what
+  keep failed releases from affecting production.
+
 Official sources:
 - [Workflow syntax: events, filters and concurrency](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
+- [GitHub Actions job dependencies](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs)
 - [Dependency caching](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)

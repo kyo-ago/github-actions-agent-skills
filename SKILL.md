@@ -24,7 +24,7 @@ Load references progressively:
 | Any external action/workflow reference or lockfile | [dependencies](references/dependencies.md) |
 | Selecting/changing a runner, especially slim | [runners](references/runners.md) |
 | Timeouts, dependencies, failure behavior | [reliability](references/reliability.md) |
-| Triggers, cancellation, caching, cost | [efficiency](references/efficiency.md) |
+| Triggers, cancellation, caching, cost, release parallelism | [efficiency](references/efficiency.md) |
 | Naming, updates, change scope | [maintainability](references/maintainability.md) |
 | Duplicate review or composite creation/change | [composite actions](references/composite-actions.md) |
 | Every generated/modified result | [validation](references/validation.md) |
